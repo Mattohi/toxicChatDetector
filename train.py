@@ -8,27 +8,14 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, classification_report
 
 
-# =========================
-# 1. Baca dataset
-# =========================
-
 data = pd.read_csv("dataset/toxic.csv")
 
 print("Jumlah data:", len(data))
 print(data.head())
 
-
-# =========================
-# 2. Pisahkan input dan label
-# =========================
-
 X = data["text"]
 y = data["label"]
 
-
-# =========================
-# 3. Split dataset
-# =========================
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -38,10 +25,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-
-# =========================
-# 4. Buat model
-# =========================
 
 model = Pipeline([
     (
@@ -59,11 +42,6 @@ model = Pipeline([
     )
 ])
 
-
-# =========================
-# 5. Training
-# =========================
-
 print("\nTraining model...")
 
 model.fit(X_train, y_train)
@@ -71,29 +49,21 @@ model.fit(X_train, y_train)
 print("Training selesai!")
 
 
-# =========================
-# 6. Evaluasi
-# =========================
-
 prediction = model.predict(X_test)
 
 accuracy = accuracy_score(y_test, prediction)
 
-print("\nAccuracy:", accuracy)
+print("\nAkurasi:", accuracy)
 
-print("\nClassification Report:")
+print("\nLaporan klasifikasi:")
 print(
     classification_report(
         y_test,
         prediction,
-        target_names=["Non-Toxic", "Toxic"]
+        target_names=["Tidak Toxic", "Toxic"]
     )
 )
 
-
-# =========================
-# 7. Simpan model
-# =========================
 
 joblib.dump(model, "toxic_model.pkl")
 
