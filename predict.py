@@ -2,11 +2,10 @@ import joblib
 import pandas as pd
 import os
 
-# Load model
 model = joblib.load("toxic_model.pkl")
 
 print("=== TOXIC CHAT DETECTOR ===")
-print("Ketik 'exit' untuk keluar.\n")
+print("Type 'exit' to quit.\n")
 
 while True:
 
@@ -15,7 +14,6 @@ while True:
     if text.lower() == "exit":
         break
 
-    # Prediksi
     prediction = model.predict([text])[0]
     probability = model.predict_proba([text])[0]
 
@@ -29,33 +27,20 @@ while True:
     print("\nResult:", label)
     print("Confidence:", round(confidence, 2), "%")
 
-    # Tanya apakah prediksi benar
-    correct = input("Prediksi ini benar? (y/n): ").lower()
+    correct = input("Was this prediction correct? (y/n): ").lower()
 
     if correct == "n":
+   
+        true_label = 1 - int(prediction)
 
-        # Tanya label yang sebenarnya
-        while True:
-            actual = input("Seharusnya apa? (toxic/non-toxic): ").lower()
+        dataset_dir = "dataset"
+        os.makedirs(dataset_dir, exist_ok=True)
+        dataset_path = os.path.join(dataset_dir, "toxic.csv")
 
-            if actual == "toxic":
-                true_label = 1
-                break
-
-            elif actual == "non-toxic":
-                true_label = 0
-                break
-
-            else:
-                print("Masukkan 'toxic' atau 'non-toxic'.")
-
-        # Tambahkan ke dataset
         new_data = pd.DataFrame({
             "text": [text],
             "label": [true_label]
         })
-
-        dataset_path = "dataset/toxic.csv"
 
         new_data.to_csv(
             dataset_path,
@@ -64,11 +49,11 @@ while True:
             index=False
         )
 
-        print("\nData berhasil ditambahkan ke dataset!")
+        print("\nData added to the dataset!")
         print("Text:", text)
-        print("Label:", true_label)
+        print("Label:", "TOXIC" if true_label == 1 else "NON-TOXIC")
 
     else:
-        print("Oke, prediksi dianggap benar.")
+        print("Okay, prediction marked as correct.")
 
     print()
